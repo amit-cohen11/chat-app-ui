@@ -76,6 +76,8 @@ const Login = () => {
       <FormControl id="email" isRequired>
         <FormLabel>Email</FormLabel>
         <Input
+          value={email}
+          type="email"
           placeholder={"Enter Your Email"}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -85,6 +87,7 @@ const Login = () => {
         <FormLabel>Password</FormLabel>
         <InputGroup size={"md"}>
           <Input
+            value={password}
             type={show ? "text" : "password"}
             placeholder={"Enter Your Name"}
             onChange={(e) => setPassword(e.target.value)}
@@ -112,7 +115,7 @@ const Login = () => {
         width={"100%"}
         onClick={() => {
           setEmail("guest@example.com");
-          setPassword(123456);
+          setPassword("123456");
         }}
       >
         Get Guest User Credentials
