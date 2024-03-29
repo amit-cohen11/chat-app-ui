@@ -41,7 +41,7 @@ const HomePage = () => {
           Talk-A-Tive
         </Text>
       </Box>
-      <Box bg={"white"} w="100%" p={4} borderRadius="lg" borderwidth="1px">
+      <Box bg={"white"} w="100%" p={4} borderRadius="lg" borderWidth="1px">
         <Tabs variant="soft-rounded">
           <TabList mb="1em">
             <Tab width={"50%"}>Login</Tab>
