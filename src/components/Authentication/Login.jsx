@@ -8,9 +8,10 @@ import {
   VStack,
   useToast,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import { BASE_URL_SERVER } from "../../config";
 
 const Login = () => {
   const [show, setShow] = useState(false);
@@ -43,7 +44,7 @@ const Login = () => {
       const config = { headers: { "Content-type": "application/json" } };
 
       const { data } = await axios.post(
-        "http://localhost:5000/api/user/login",
+        `${BASE_URL_SERVER}/api/user/login`,
         { email, password },
         config
       );
