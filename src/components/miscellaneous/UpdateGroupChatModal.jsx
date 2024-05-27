@@ -16,9 +16,11 @@ import {
 } from "@chakra-ui/react";
 import { ViewIcon } from "@chakra-ui/icons";
 import { useState } from "react";
+import axios from "axios";
 
 import { ChatState } from "../../Context/chatProvider";
 import UserBadgeItem from "../UserAvatar/UserBadgeItem";
+import { BASE_URL_SERVER } from "../../config";
 
 const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -33,7 +35,45 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
 
   const handleRemove = () => {};
 
-  const handleRename = () => {};
+  const handleRename = async () => {
+    if (!groupChatName) return;
+
+    try {
+      setRenameLoading(true);
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = axios.put(
+        `${BASE_URL_SERVER}/api/chat/rename`,
+        {
+          chatId: selectedChat._id,
+          chatName: groupChatName,
+        },
+        config
+      );
+
+      setSelectedChat(data);
+      setFetchAgain(!fetchAgain);
+      setRenameLoading(false);
+    } catch (error) {
+      toast({
+        title: "Error occurred",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+
+      setRenameLoading(false);
+    }
+
+    setGroupChatName("");
+  };
 
   const handleSearch = () => {};
 
@@ -57,7 +97,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
             <Box w="100%" display="flex" flexWrap="wrap" pb={3}>
               {selectedChat.users.map((u) => (
                 <UserBadgeItem
-                  key={user._id}
+                  key={u._id}
                   user={u}
                   handleFunction={() => handleRemove(u)}
                 />
