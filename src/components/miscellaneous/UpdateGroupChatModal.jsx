@@ -35,10 +35,54 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
 
   const toast = useToast();
 
-  const handleRemove = () => {};
+  const handleRemove = async (userRemove) => {
+    if (selectedChat.groupAdmin._id !== user._id && userRemove._id !== user._id) {
+      toast({
+        title: "Only admins can remove someone",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
 
-  const handleAddUser = async (user1) => {
-    if (selectedChat.users.find((u) => u._id === user1._id)) {
+    try {
+      setLoading(true);
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = axios.put(
+        `${BASE_URL_SERVER}/api/chat/groupremove`,
+        {
+          chatId: selectedChat._id,
+          userId: userRemove._id,
+        },
+        config
+      );
+
+      userRemove._id === user._id ? setSelectedChat() : setSelectedChat(data);
+      setFetchAgain(!fetchAgain);
+      setLoading(false);
+    } catch (error) {
+      toast({
+        title: "Error Occurred",
+        description: error.message.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+    }
+  };
+
+  const handleAddUser = async (userAdd) => {
+    if (selectedChat.users.find((u) => u._id === userAdd._id)) {
       toast({
         title: "User already in group",
         status: "error",
@@ -49,7 +93,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
       return;
     }
 
-    if (selectedChat.groupAdmin._id === user._id) {
+    if (selectedChat.groupAdmin._id !== user._id) {
       toast({
         title: "only admins can add someone",
         status: "error",
@@ -73,7 +117,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
         `${BASE_URL_SERVER}/api/chat/groupadd`,
         {
           chatId: selectedChat._id,
-          userId: user1._id,
+          userId: userAdd._id,
         },
         config
       );
