@@ -11,12 +11,24 @@ import {
 
 import Login from "../components/Authentication/Login";
 import Signup from "../components/Authentication/Signup";
+import { useHistory } from "react-router-dom";
+import { useEffect } from "react";
 
 const HomePage = () => {
+  const history = useHistory();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("userInfo"));
+
+    if (user) {
+      history.push("/chats");
+    }
+  }, [history]);
+
   return (
     <Container maxW="xl" centerContent>
       <Box
-        d="flex"
+        display="flex"
         justifyContent="center"
         p={3}
         bg={"white"}
@@ -29,7 +41,7 @@ const HomePage = () => {
           Talk-A-Tive
         </Text>
       </Box>
-      <Box bg={"white"} w="100%" p={4} borderRadius="lg" borderwidth="1px">
+      <Box bg={"white"} w="100%" p={4} borderRadius="lg" borderWidth="1px">
         <Tabs variant="soft-rounded">
           <TabList mb="1em">
             <Tab width={"50%"}>Login</Tab>
