@@ -12,10 +12,16 @@ import { BASE_URL_SERVER } from "../config";
 import "./styles.css";
 import ScrollableChat from "./ScrollableChat";
 
+import io from "socket.io-client";
+
+const ENDPOINT = BASE_URL_SERVER;
+let socket, selectedChatCompare;
+
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
+  const [socketConnected, setSocketConnected] = useState(false);
 
   const toast = useToast();
   const { user, selectedChat, setSelectedChat } = ChatState();
@@ -53,6 +59,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   useEffect(() => {
     fetchMessages();
   }, [selectedChat]);
+
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connection", () => setSocketConnected(true));
+  }, []);
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
