@@ -3,6 +3,7 @@ import { IconButton } from "@chakra-ui/button";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Lottie from "react-lottie";
 
 import { ChatState } from "../Context/chatProvider";
 import { getSender, getSenderFull } from "../config/ChatLogics";
@@ -11,6 +12,7 @@ import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import { BASE_URL_SERVER } from "../config";
 import "./styles.css";
 import ScrollableChat from "./ScrollableChat";
+import animationData from "../animations/typing.json";
 
 import io from "socket.io-client";
 
@@ -24,6 +26,15 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
   const toast = useToast();
   const { user, selectedChat, setSelectedChat } = ChatState();
@@ -202,7 +213,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             )}
 
             <FormControl onKeyDown={sendMessage} isRequired mt={3}>
-              {isTyping ? <div>Loading...</div> : <></>}
+              {isTyping ? (
+                <div>
+                  <Lottie
+                    options={defaultOptions}
+                    width={70}
+                    style={{ marginBottom: 15, marginLeft: 0 }}
+                  />
+                </div>
+              ) : (
+                <></>
+              )}
 
               <Input
                 variant={"filled"}
